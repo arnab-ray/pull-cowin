@@ -15,10 +15,6 @@ object DataPollingManager {
     private const val getDistricts = "https://cdn-api.co-vin.in/api/v2/admin/location/districts/"
     private const val getSlotsAvailableTodayPrefix = "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict"
 
-    private val slackIncomingWebHook: SlackIncomingWebHook by lazy {
-        SlackIncomingWebHook("https://hooks.slack.com/services/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")
-    }
-
     private val asyncHttpClient: AsyncHttpClient by lazy {
         DefaultAsyncHttpClient()
     }
@@ -36,7 +32,7 @@ object DataPollingManager {
             val message = "${it.date} | ${it.pincode} | ${it.feeType} | ${it.name} = ${it.availableCapacity} (${it.vaccine})"
             println(message)
             if (shouldPostToSlack)
-                sendSlackMessage(message)
+                sendSlackMessage(message, ageLimit)
         }
     }
 
@@ -106,7 +102,8 @@ object DataPollingManager {
         return infos
     }
 
-    private fun sendSlackMessage(message: String) {
-        slackIncomingWebHook.sendMessage(SlackMessage("<!channel> $message"))
+    private fun sendSlackMessage(message: String, ageLimit: Int) {
+        val slackIncomingWebHook = SlackIncomingWebhookConstructor.getIncomingWebHook(ageLimit)
+        slackIncomingWebHook.sendMessage(SlackMessage(message))
     }
 }
