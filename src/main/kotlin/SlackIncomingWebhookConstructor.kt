@@ -1,9 +1,9 @@
 object SlackIncomingWebhookConstructor {
     fun getIncomingWebHook(ageLimit: Int): SlackIncomingWebHook {
         return if (ageLimit == 18) {
-            SlackIncomingWebHook("https://hooks.slack.com/services/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")
+            SlackIncomingWebHook("https://hooks.slack.com/services/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")
         } else {
-            SlackIncomingWebHook("https://hooks.slack.com/services/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")
+            SlackIncomingWebHook("https://hooks.slack.com/services/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")
         }
     }
 }
