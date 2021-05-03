@@ -15,6 +15,10 @@ object DataPollingManager {
     private const val getDistricts = "https://cdn-api.co-vin.in/api/v2/admin/location/districts/"
     private const val getSlotsAvailableTodayPrefix = "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict"
 
+    private val slackIncomingWebHook: SlackIncomingWebHook by lazy {
+        SlackIncomingWebHook("https://hooks.slack.com/services/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")
+    }
+
     private val asyncHttpClient: AsyncHttpClient by lazy {
         DefaultAsyncHttpClient()
     }
@@ -23,13 +27,16 @@ object DataPollingManager {
         ObjectMapper().setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE)
     }
 
-    suspend fun pollCowin(stateName: String, districtName: String) {
+    suspend fun pollCowin(stateName: String, districtName: String, ageLimit: Int, shouldPostToSlack: Boolean) {
         val stateId = getStateId(stateName)
         val districtId = getDistrictId(districtName, stateId)
-        val slots = getSlots(districtId)
+        val slots = getSlots(districtId, ageLimit).sortedBy { it.name }
 
         slots.forEach {
-            println("${it.date} | ${it.pincode} | ${it.feeType} | ${it.name} | ${it.availableCapacity}")
+            val message = "${it.date} | ${it.pincode} | ${it.feeType} | ${it.name} = ${it.availableCapacity} (${it.vaccine})"
+            println(message)
+            if (shouldPostToSlack)
+                sendSlackMessage(message)
         }
     }
 
@@ -67,7 +74,7 @@ object DataPollingManager {
         return districts.first { it.districtName.equals(districtName, true) }.districtId
     }
 
-    private suspend fun getSlots(districtId: String): List<MinInfo> {
+    private suspend fun getSlots(districtId: String, ageLimit: Int): List<MinInfo> {
         val dateFormat = SimpleDateFormat("dd-MM-yyyy").format(Date(System.currentTimeMillis()))
         val getSlotsUrl = "$getSlotsAvailableTodayPrefix?district_id=$districtId&date=$dateFormat"
         println(getSlotsUrl)
@@ -88,14 +95,18 @@ object DataPollingManager {
         val infos = mutableListOf<MinInfo>()
 
         centers.forEach { center ->
-            val filteredSessions = center.sessions.filter { it.minAgeLimit == 18 && it.availableCapacity > 0}
+            val filteredSessions = center.sessions.filter { it.minAgeLimit == ageLimit && it.availableCapacity > 0}
 
             filteredSessions.forEach { session ->
                 infos.add(MinInfo(date = session.date, pincode = center.pincode, name = center.name,
-                    feeType = center.feeType, availableCapacity = session.availableCapacity))
+                    vaccine = session.vaccine, feeType = center.feeType, availableCapacity = session.availableCapacity))
             }
         }
 
         return infos
+    }
+
+    private fun sendSlackMessage(message: String) {
+        slackIncomingWebHook.sendMessage(SlackMessage("<!channel> $message"))
     }
 }

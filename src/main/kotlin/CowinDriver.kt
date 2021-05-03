@@ -8,7 +8,12 @@ object CowinDriver {
         runBlocking {
             while (true) {
                 try {
-                    DataPollingManager.pollCowin("Karnataka", "BBMP")
+                    DataPollingManager.pollCowin(
+                        stateName = "Karnataka",
+                        districtName = "BBMP",
+                        ageLimit = 18,
+                        shouldPostToSlack = true
+                    )
                 } catch (e: Exception) {
                     println(e.message)
                 }

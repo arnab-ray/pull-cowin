@@ -5,6 +5,7 @@ data class MinInfo(
     val date: String,
     val pincode: String,
     val name: String,
+    val vaccine: String,
     val feeType: String,
     val availableCapacity: Int
 )
