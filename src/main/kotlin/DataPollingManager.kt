@@ -104,6 +104,6 @@ object DataPollingManager {
 
     private fun sendSlackMessage(message: String, ageLimit: Int) {
         val slackIncomingWebHook = SlackIncomingWebhookConstructor.getIncomingWebHook(ageLimit)
-        slackIncomingWebHook.sendMessage(SlackMessage("<!channel> $message"))
+        slackIncomingWebHook.sendMessage(SlackMessage(message))
     }
 }
