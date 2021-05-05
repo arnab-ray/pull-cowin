@@ -13,7 +13,7 @@ class SlackIncomingWebHook(private val slackUrl: String) {
         private val httpClient = DefaultAsyncHttpClient()
     }
 
-    fun sendMessage(message: SlackMessage) : CompletableFuture<Response> {
+    fun sendMessage(message: SlackMessage): CompletableFuture<Response> {
         val request = RequestBuilder()
             .setMethod("POST")
             .setUrl(slackUrl)
@@ -21,5 +21,9 @@ class SlackIncomingWebHook(private val slackUrl: String) {
             .build()
 
         return httpClient.executeRequest(request).toCompletableFuture()
+    }
+
+    fun getUrl(): String {
+        return slackUrl
     }
 }

@@ -27,12 +27,14 @@ object DataPollingManager {
         val stateId = getStateId(stateName)
         val districtId = getDistrictId(districtName, stateId)
         val slots = getSlots(districtId, ageLimit).sortedBy { it.name }
+        val slackIncomingWebHook = SlackIncomingWebhookConstructor.getIncomingWebHook(ageLimit, districtName)
 
         slots.forEach {
             val message = "${it.date} | ${it.pincode} | ${it.feeType} | ${it.name} = ${it.availableCapacity} (${it.vaccine})"
             println(message)
-            if (shouldPostToSlack)
-                sendSlackMessage(message, ageLimit, districtName)
+            if (shouldPostToSlack) {
+                slackIncomingWebHook.sendMessage(SlackMessage(message))
+            }
         }
     }
 
@@ -102,8 +104,4 @@ object DataPollingManager {
         return infos
     }
 
-    private fun sendSlackMessage(message: String, ageLimit: Int, districtName: String) {
-        val slackIncomingWebHook = SlackIncomingWebhookConstructor.getIncomingWebHook(ageLimit, districtName)
-        slackIncomingWebHook.sendMessage(SlackMessage(message))
-    }
 }
