@@ -8,12 +8,15 @@ object CowinDriver {
         runBlocking {
             while (true) {
                 try {
-                    DataPollingManager.pollCowin(
-                        stateName = "Karnataka",
-                        districtName = "BBMP",
-                        ageLimit = 18,
-                        shouldPostToSlack = true
-                    )
+                    val inputData = DataInitializer.initializeData()
+                    inputData.forEach {
+                        DataPollingManager.pollCowin(
+                            stateName = it.state,
+                            districtName = it.district,
+                            ageLimit = it.age,
+                            shouldPostToSlack = true
+                        )
+                    }
                 } catch (e: Exception) {
                     println(e.message)
                 }
