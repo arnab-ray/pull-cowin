@@ -1,6 +1,5 @@
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import kotlin.system.exitProcess
 
 object CowinDriver {
 
