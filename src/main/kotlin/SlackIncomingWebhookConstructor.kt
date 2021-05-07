@@ -12,12 +12,12 @@ object SlackIncomingWebhookConstructor {
                 if (ageLimit == 18) {
                     SlackIncomingWebHook("https://hooks.slack.com/services/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")
                 } else {
-                    SlackIncomingWebHook("https://hooks.slack.com/services/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")
+                    SlackIncomingWebHook("https://hooks.slack.com/services/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")
                 }
             }
             "Pune" -> {
                 if (ageLimit == 18) {
-                    SlackIncomingWebHook("https://hooks.slack.com/services/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")
+                    SlackIncomingWebHook("https://hooks.slack.com/services/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")
                 } else {
                     SlackIncomingWebHook("https://hooks.slack.com/services/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")
                 }

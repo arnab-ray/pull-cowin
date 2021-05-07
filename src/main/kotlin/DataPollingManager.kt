@@ -59,7 +59,7 @@ object DataPollingManager {
     private suspend fun getDistrictId(districtName: String, stateId: String): String {
         val request = RequestBuilder(HttpConstants.Methods.GET)
             .setUrl(getDistricts + stateId)
-            .setHeader("Content-Type", "application/json", )
+            .setHeader("Content-Type", "application/json")
             .setHeader("user-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36")
             .build()
 
