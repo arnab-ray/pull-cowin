@@ -3,23 +3,23 @@ object SlackIncomingWebhookConstructor {
         return when (district) {
             "BBMP" -> {
                 if (ageLimit == 18) {
-                    SlackIncomingWebHook("https://hooks.slack.com/services/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")
+                    SlackIncomingWebHook("https://hooks.slack.com/services/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")
                 } else {
-                    SlackIncomingWebHook("https://hooks.slack.com/services/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")
+                    SlackIncomingWebHook("https://hooks.slack.com/services/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")
                 }
             }
             "Kolkata" -> {
                 if (ageLimit == 18) {
-                    SlackIncomingWebHook("https://hooks.slack.com/services/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")
+                    SlackIncomingWebHook("https://hooks.slack.com/services/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")
                 } else {
-                    SlackIncomingWebHook("https://hooks.slack.com/services/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")
+                    SlackIncomingWebHook("https://hooks.slack.com/services/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")
                 }
             }
             "Pune" -> {
                 if (ageLimit == 18) {
-                    SlackIncomingWebHook("https://hooks.slack.com/services/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")
+                    SlackIncomingWebHook("https://hooks.slack.com/services/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")
                 } else {
-                    SlackIncomingWebHook("https://hooks.slack.com/services/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")
+                    SlackIncomingWebHook("https://hooks.slack.com/services/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")
                 }
             }
             else -> {
