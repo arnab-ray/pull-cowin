@@ -13,7 +13,7 @@ import java.util.*
 object DataPollingManager {
     private const val getStatesUrl = "https://cdn-api.co-vin.in/api/v2/admin/location/states"
     private const val getDistricts = "https://cdn-api.co-vin.in/api/v2/admin/location/districts/"
-    private const val getSlotsAvailableTodayPrefix = "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict"
+    private const val getSlotsAvailableTodayPrefix = "https://cdn-api.co-vin.in/api/v2/appointment/sessions/calendarByDistrict"
 
     private val asyncHttpClient: AsyncHttpClient by lazy {
         DefaultAsyncHttpClient()
@@ -23,10 +23,10 @@ object DataPollingManager {
         ObjectMapper().setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE)
     }
 
-    suspend fun pollCowin(stateName: String, districtName: String, ageLimit: Int, shouldPostToSlack: Boolean) {
+    /*suspend fun pollCowin(stateName: String, districtName: String, ageLimit: Int, shouldPostToSlack: Boolean) {
         val stateId = getStateId(stateName)
         val districtId = getDistrictId(districtName, stateId)
-        val slots = getSlots(districtId, ageLimit).sortedBy { it.name }
+        val slots = getSlots(districtId).sortedBy { it.name.toLowerCase() }
         val slackIncomingWebHook = SlackIncomingWebhookConstructor.getIncomingWebHook(ageLimit, districtName)
 
         slots.forEach {
@@ -34,6 +34,24 @@ object DataPollingManager {
             println(message)
             if (shouldPostToSlack) {
                 slackIncomingWebHook.sendMessage(SlackMessage(message))
+            }
+        }
+    }*/
+
+    suspend fun notifySlots(districtId: String, shouldPostToSlack: Boolean) {
+        val centers = getSlots(districtId).sortedBy { it.name }
+        val ages = listOf(18, 45)
+
+        ages.forEach { ageLimit ->
+            val slots = filterSlots(centers, ageLimit)
+            val slackIncomingWebHook = SlackIncomingWebhookConstructor.getIncomingWebHookForDistrictId(ageLimit, districtId)
+
+            slots.forEach {
+                val message = "${it.date} | ${it.pincode} | ${it.feeType} | ${it.name} = ${it.availableCapacity} (${it.vaccine})"
+                println(message)
+                if (shouldPostToSlack) {
+                    slackIncomingWebHook.sendMessage(SlackMessage(message))
+                }
             }
         }
     }
@@ -74,7 +92,7 @@ object DataPollingManager {
         return districts.first { it.districtName.equals(districtName, true) }.districtId
     }
 
-    private suspend fun getSlots(districtId: String, ageLimit: Int): List<MinInfo> {
+    private suspend fun getSlots(districtId: String): List<Center> {
         val dateFormat = SimpleDateFormat("dd-MM-yyyy").format(Date(System.currentTimeMillis()))
         val getSlotsUrl = "$getSlotsAvailableTodayPrefix?district_id=$districtId&date=$dateFormat"
         println(getSlotsUrl)
@@ -89,10 +107,12 @@ object DataPollingManager {
             asyncHttpClient.executeRequest(request).get().responseBody
         }
 
-        val centers = withContext(Dispatchers.IO) {
+        return withContext(Dispatchers.IO) {
             objectMapper.readValue(response, object: TypeReference<CenterResponse>() {}).centers
         }
+    }
 
+    private fun filterSlots(centers: List<Center>, ageLimit: Int): List<MinInfo> {
         val infos = mutableListOf<MinInfo>()
 
         centers.forEach { center ->

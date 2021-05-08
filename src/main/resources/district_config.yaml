@@ -1,0 +1,13 @@
+locations:
+  - state: "Karnataka"
+    district: "BBMP"
+    districtCode: "294"
+  - state: "West Bengal"
+    district: "Kolkata"
+    districtCode: "725"
+  - state: "West Bengal"
+    district: "North 24 Parganas"
+    districtCode: "730"
+  - state: "Maharashtra"
+    district: "Pune"
+    districtCode: "363"

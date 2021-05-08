@@ -1,19 +1,17 @@
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 
-object CowinDriver {
+object VacantSlotNotifier {
 
     @JvmStatic
     fun main(args: Array<String>) {
         runBlocking {
             while (true) {
                 try {
-                    val inputData = DataInitializerForYoung.initializeData()
+                    val inputData = DataInitializer.initializeData()
                     inputData.forEach {
-                        DataPollingManager.pollCowin(
-                            stateName = it.state,
-                            districtName = it.district,
-                            ageLimit = it.age,
+                        DataPollingManager.notifySlots(
+                            districtId = it.districtCode,
                             shouldPostToSlack = true
                         )
                     }

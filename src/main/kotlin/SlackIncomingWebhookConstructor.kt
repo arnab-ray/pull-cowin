@@ -27,4 +27,34 @@ object SlackIncomingWebhookConstructor {
             }
         }
     }
+
+
+    fun getIncomingWebHookForDistrictId(ageLimit: Int, districtId: String): SlackIncomingWebHook {
+        return when (districtId) {
+            "294" -> {
+                if (ageLimit == 18) {
+                    SlackIncomingWebHook("https://hooks.slack.com/services/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")
+                } else {
+                    SlackIncomingWebHook("https://hooks.slack.com/services/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")
+                }
+            }
+            "725", "730" -> {
+                if (ageLimit == 18) {
+                    SlackIncomingWebHook("https://hooks.slack.com/services/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")
+                } else {
+                    SlackIncomingWebHook("https://hooks.slack.com/services/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")
+                }
+            }
+            "363" -> {
+                if (ageLimit == 18) {
+                    SlackIncomingWebHook("https://hooks.slack.com/services/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")
+                } else {
+                    SlackIncomingWebHook("https://hooks.slack.com/services/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")
+                }
+            }
+            else -> {
+                SlackIncomingWebHook("")
+            }
+        }
+    }
 }
