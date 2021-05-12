@@ -31,7 +31,7 @@ object SlackIncomingWebhookConstructor {
 
     fun getIncomingWebHookForDistrictId(ageLimit: Int, districtId: String): SlackIncomingWebHook {
         return when (districtId) {
-            "294" -> {
+            "294", "265" -> {
                 if (ageLimit == 18) {
                     SlackIncomingWebHook("https://hooks.slack.com/services/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")
                 } else {
